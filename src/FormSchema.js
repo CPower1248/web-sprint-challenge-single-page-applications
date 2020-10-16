@@ -11,5 +11,6 @@ export default yup.object().shape({
     pepperoni: yup.boolean(),
     sausage: yup.boolean(),
     pineapple: yup.boolean(),
+    ham: yup.boolean(),
     special: yup.string(),
 })

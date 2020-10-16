@@ -1,5 +1,6 @@
+import Axios from "axios";
 import React, {useState, useEffect} from "react";
-// import Axios from "axios"
+import { Link, Switch, Route } from "react-router-dom"
 import * as yup from "yup"
 import schema from "./FormSchema"
 import Order from "./Order"
@@ -11,6 +12,7 @@ const initialFormValues = {
   pepperoni: false,
   sausage: false,
   pineapple: false,
+  ham: false,
   special: "",
 }
 
@@ -57,12 +59,24 @@ const App = () => {
     let newPizza = {
       name: formValues.name.trim(),
       size: formValues.size,
-      toppings: ["pepperoni", "sausage", "pineapple"].filter((item => formValues[item])),
+      toppings: ["pepperoni", "sausage", "pineapple", "ham"].filter((item => formValues[item])),
       special: formValues.special.trim(),
     }
     if (!newPizza.name || !newPizza.size) return;
-    setPizzas(pizzas.concat(newPizza))
+    
+    Axios
+      .post("https://reqres.in/api/users", newPizza)
+      .then(res => {
+        console.log(res)
+        setPizzas([...pizzas, res.data])
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    // setPizzas(pizzas.concat(newPizza))
     setFormValues(initialFormValues)
+
   }
 
   useEffect(() => {
@@ -73,19 +87,33 @@ const App = () => {
 
   return (
     <>
-      <h1>Lambda Eats</h1>
-      <p>Order a great pizza!</p>
-      <Order
-        values={formValues}
-        disabled={disabled}
-        change={inputChange}
-        submit={formSubmit}
-        errors={formErrors}
-      />
 
-      {pizzas.map(item => {
-        return <Pizza key={item.id} details={item} />
-      })}
+      <Link to="/">Home</Link>
+      <Link to="/pizza">Order Pizza</Link>
+
+      <Switch>
+
+        <Route path="/pizza">
+          <Order 
+            values={formValues}
+            disabled={disabled}
+            change={inputChange}
+            submit={formSubmit}
+            errors={formErrors}
+          />
+
+          {pizzas.map(item => {
+            return <Pizza key={item.id} details={item} />
+          })}
+        </Route>
+
+        <Route path="/">
+        <h1>Lambda Eats</h1>
+        <p>Order a great pizza!</p>
+        </Route>
+
+      </Switch>
+
     </>
   );
 };

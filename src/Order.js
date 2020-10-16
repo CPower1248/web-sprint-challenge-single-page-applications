@@ -70,6 +70,14 @@ export default function OrderForm(props) {
                             onChange={onChange}
                         />
                     </label>
+                    <label>Ham
+                        <input 
+                            name="ham"
+                            type="checkbox"
+                            checked={values.ham}
+                            onChange={onChange}
+                        />
+                    </label>
                 </div>
                 <div>
                     <label>Special Instructions
